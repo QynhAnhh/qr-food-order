@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ================= ENUMS =================
+enum Role {
+  ADMIN
+  WAITER
+  KITCHEN
+}
+
+enum OrderStatus {
+  IN_PROGRESS // Bàn đang ăn
+  COMPLETED   // Đã thanh toán và dọn bàn
+}
+
+enum OrderItemStatus {
+  PENDING_CONFIRM // Đang chờ Waiter duyệt (Khách có thể hủy)
+  CONFIRMED       // Đã duyệt (Khóa nút hủy)
+  PREPARING       // Bếp đang nấu
+  READY           // Nấu xong, chờ Waiter mang ra
+  CANCELLED       // Bị hủy (Bởi khách hoặc Waiter)
+}
+
+// ================= MODELS =================
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String   // Đã được hash (bcrypt/argon2)
+  role      Role
+  isActive  Boolean  @default(true) // Cơ chế Xóa mềm
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Table {
+  id        Int        @id @default(autoincrement())
+  name      String     // Vd: "Bàn 1", "Bàn VIP 2"
+  isActive  Boolean    @default(true) // Ẩn bàn nếu bàn bị hỏng/dọn đi
+  
+  orders    Order[]
+  feedbacks Feedback[]
+}
+
+model MenuItem {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  isActive    Boolean       @default(true) // Cơ chế Xóa mềm
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  orderItems  OrderDetail[]
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  tableId       Int
+  table         Table         @relation(fields: [tableId], references: [id])
+  
+  status        OrderStatus   @default(IN_PROGRESS)
+  totalAmount   Float         @default(0) // Tổng tiền được tính lại mỗi khi OrderDetail thay đổi
+  paymentMethod String?       // "MOMO", "CASH" (Cập nhật lúc thanh toán)
+  momoTransId   String?       // Mã giao dịch MoMo để đối soát
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  items         OrderDetail[]
+  feedbacks     Feedback[]
+}
+
+model OrderDetail {
+  id           Int             @id @default(autoincrement())
+  orderId      Int
+  order        Order           @relation(fields: [orderId], references: [id])
+  
+  menuItemId   Int
+  menuItem     MenuItem        @relation(fields: [menuItemId], references: [id])
+  
+  quantity     Int
+  priceAtOrder Float           // QUAN TRỌNG: Lưu giá của món ăn tại thời điểm order
+  
+  status       OrderItemStatus @default(PENDING_CONFIRM)
+  batchId      Int             // Định danh các lượt gọi món (1, 2, 3...)
+  
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  tableId   Int
+  table     Table    @relation(fields: [tableId], references: [id])
+  
+  content   String   // Nội dung khách phàn nàn
+  createdAt DateTime @default(now())
+}
