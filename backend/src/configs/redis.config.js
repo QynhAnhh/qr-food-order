@@ -13,6 +13,12 @@ redisClient.on('connect', () => {
     console.log('Đã kết nối thành công tới máy chủ Redis!');
 });
 
-redisClient.connect().catch(console.error);
+const connectRedis = async () => {
+    try {
+        await redisClient.connect();
+    } catch (error) {
+        console.error(error);
+    }
+};
 
-module.exports = redisClient;
+module.exports = { redisClient, connectRedis };
