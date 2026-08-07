@@ -1,5 +1,4 @@
-const PrismaClient = require("@prisma/client").PrismaClient;
-const prisma = new PrismaClient();
+const prisma = require('../../lib/prisma.client');
 const { comparePassword } = require("../../lib/hash");
 const jwt = require("jsonwebtoken");
 const ERROR_CODES = require("../../constants/errorCodes");
