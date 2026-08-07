@@ -1,5 +1,11 @@
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
+const { PrismaClient } = require('@prisma/client');
+const { Pool } = require('pg');
+const { PrismaPg } = require('@prisma/adapter-pg');
+const env = require('../configs/env.config');
+
+const pool = new Pool({ connectionString: env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 const prismaExtended = prisma.$extends({
     query:{
         user:{
