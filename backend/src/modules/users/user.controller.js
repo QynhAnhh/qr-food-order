@@ -46,7 +46,7 @@ const createUser = async (req, res, next) => {
       select: { id: true, username: true, role: true },
     });
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "Tạo tài khoản thành công!",
       data: newUser,
