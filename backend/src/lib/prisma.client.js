@@ -57,6 +57,29 @@ const prismaExtended = prisma.$extends({
         });
       },
     },
+
+    table: {
+      async findMany({ args, query }) {
+        args.where = { isActive: true, ...args.where };
+        return query(args);
+      },
+      async findFirst({ args, query }) {
+        args.where = { isActive: true, ...args.where };
+        return query(args);
+      },
+      async delete({ args, query }) {
+        return prisma.table.update({
+          where: args.where,
+          data: { isActive: false },
+        });
+      },
+      async deleteMany({ args, query }) {
+        return prisma.table.updateMany({
+          where: args.where,
+          data: { isActive: false },
+        });
+      },
+    },
   },
 });
 
