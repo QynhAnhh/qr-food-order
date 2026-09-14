@@ -10,6 +10,9 @@ const logger = require("./lib/logger");
 const errorHandler = require("./middlewares/error.mid");
 const authRoutes = require("./modules/auth/auth.route");
 const userRoutes = require("./modules/users/user.route");
+const tableRoutes = require('./modules/tables/table.route');
+const menuItemRoutes = require('./modules/menuItems/menuItem.route');
+
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,6 +24,9 @@ initSocket(httpServer);
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use('/tables', tableRoutes);
+app.use('/menu-items', menuItemRoutes);
+
 
 app.use(errorHandler);
 
