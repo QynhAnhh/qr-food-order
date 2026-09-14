@@ -31,9 +31,9 @@ enum OrderItemStatus {
 model User {
   id        Int      @id @default(autoincrement())
   username  String   @unique
-  password  String   // Đã được hash (bcrypt/argon2)
+  password  String
   role      Role
-  isActive  Boolean  @default(true) // Cơ chế Xóa mềm
+  isActive  Boolean  @default(true)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -54,7 +54,7 @@ model MenuItem {
   description String?
   price       Float
   imageUrl    String?
-  isActive    Boolean       @default(true) // Cơ chế Xóa mềm
+  isActive    Boolean       @default(true)
   
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt

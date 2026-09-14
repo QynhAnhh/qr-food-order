@@ -1,3 +1,5 @@
+// Vẽ mã QR cho mỗi bàn
+
 const {PrismaClient} = require('@prisma/client');
 const QRCode = require('qrcode');
 const fs = require('fs');

@@ -1,4 +1,5 @@
 const {createClient} = require('redis');
+const logger = require('../lib/logger');
 const env = require('./env.config');
 
 const redisClient = createClient({
@@ -6,18 +7,18 @@ const redisClient = createClient({
 });
 
 redisClient.on('error', (err) => {
-    console.log('Lỗi kết nối redis:', err);
+    logger.error('Lỗi kết nối redis:', err);
 });
 
 redisClient.on('connect', () => {
-    console.log('Đã kết nối thành công tới máy chủ Redis!');
+    logger.info('Đã kết nối thành công tới máy chủ Redis!');
 });
 
 const connectRedis = async () => {
     try {
         await redisClient.connect();
     } catch (error) {
-        console.error(error);
+        logger.error('Lỗi khởi tạo kết nối Redis:', error);
     }
 };
 

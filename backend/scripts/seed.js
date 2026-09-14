@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const { hashPassword } = require('../src/lib/hash');
 const prisma = new PrismaClient();
 
 async function main() {
@@ -11,7 +12,7 @@ async function main() {
       { name: 'Bàn 3' },
       { name: 'Bàn 4' }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true, // bỏ qua bản ghi (bàn) trùng lặp
   });
   console.log('Đã tạo xong Bàn ăn mẫu!');
 
@@ -22,18 +23,19 @@ async function main() {
       { name: 'Trà Đá', description: 'Trà đá giải khát', price: 5000 },
       { name: 'Coca Cola', description: 'Nước ngọt có gas', price: 15000 }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true, // bỏ qua bản ghi (món ăn) trùng lặp
   });
   console.log('Đã tạo xong Thực đơn mẫu!');
 
-  // Mật khẩu tạm thời viết cứng
+  const defaultPassword = await hashPassword('123456');
+
   await prisma.user.createMany({
     data: [
-      { username: 'admin', password: 'hashed_password_tam', role: 'ADMIN' },
-      { username: 'waiter1', password: 'hashed_password_tam', role: 'WAITER' },
-      { username: 'kitchen1', password: 'hashed_password_tam', role: 'KITCHEN' },
+      { username: 'admin', password: defaultPassword, role: 'ADMIN' },
+      { username: 'waiter1', password: defaultPassword, role: 'WAITER' },
+      { username: 'kitchen1', password: defaultPassword, role: 'KITCHEN' },
     ],
-    skipDuplicates: true,
+    skipDuplicates: true, // bỏ qua bản ghi (tài khoản) trùng lặp
   });
   console.log('Đã tạo xong Tài khoản mẫu!');
 
