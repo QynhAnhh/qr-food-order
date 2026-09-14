@@ -104,4 +104,5 @@ const updateUser = async (req, res, next) => {
     next(error);
   }
 };
+
 module.exports = { getUsers, createUser, deleteUser, updateUser };
