@@ -1,6 +1,13 @@
 const { PrismaClient } = require('@prisma/client');
+const { Pool } = require('pg');
+const { PrismaPg } = require('@prisma/adapter-pg');
 const { hashPassword } = require('../src/lib/hash');
-const prisma = new PrismaClient();
+
+// Prisma 7 bắt buộc phải dùng adapter để kết nối PostgreSQL
+require('dotenv').config();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('Bắt đầu khởi tạo dữ liệu...');
