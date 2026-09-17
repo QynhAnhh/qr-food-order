@@ -3,6 +3,7 @@ const prisma = require("../../lib/prisma.client");
 const { hashPassword } = require("../../lib/hash");
 const ERROR_CODES = require("../../constants/errorCodes");
 
+// Lấy danh sách tất cả nhân viên
 const getUsers = async (req, res, next) => {
   try {
     const users = await prisma.user.findMany({
@@ -22,6 +23,7 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+// Thêm nhân viên
 const createUser = async (req, res, next) => {
   try {
     const { username, password, role } = req.body;
@@ -56,6 +58,7 @@ const createUser = async (req, res, next) => {
   }
 };
 
+// Xóa nhân viên
 const deleteUser = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.id);
@@ -71,6 +74,7 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+// Cập nhật nhân viên
 const updateUser = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.id);

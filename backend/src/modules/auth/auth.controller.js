@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const ERROR_CODES = require("../../constants/errorCodes");
 const env = require("../../configs/env.config");
 
+// Đăng nhập
 const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;

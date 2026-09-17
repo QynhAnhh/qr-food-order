@@ -1,6 +1,7 @@
 const prisma = require('../../lib/prisma.client');
 const ERROR_CODES = require('../../constants/errorCodes');
 
+// Lấy danh sách món ăn
 const getMenuItems = async (req, res, next) => {
     try {
         const items = await prisma.menuItem.findMany({
@@ -12,6 +13,7 @@ const getMenuItems = async (req, res, next) => {
     }
 };
 
+// Thêm món ăn
 const createMenuItem = async (req, res, next) => {
     try {
         const {name, price, description, imageUrl} = req.body;
@@ -45,6 +47,7 @@ const createMenuItem = async (req, res, next) => {
     }
 };
 
+// Xóa món ăn
 const deleteMenuItem = async (req, res, next) => {
     try {
         const id = parseInt(req.params.id);
@@ -60,6 +63,7 @@ const deleteMenuItem = async (req, res, next) => {
     }
 };
 
+// Cập nhật món ăn
 const updateMenuItem = async (req, res, next) => {
     try {
         const id = parseInt(req.params.id);

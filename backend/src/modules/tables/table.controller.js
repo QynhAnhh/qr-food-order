@@ -3,6 +3,7 @@ const ERROR_CODES = require('../../constants/errorCodes');
 const jwt = require('jsonwebtoken');
 const env = require('../../configs/env.config');
 
+// Lấy danh sách tất cả bàn
 const getTables = async (req, res, next) => {
   try {
     const tables = await prisma.table.findMany({
@@ -14,6 +15,7 @@ const getTables = async (req, res, next) => {
   }
 };
 
+// Thêm bàn mới
 const createTable = async (req, res, next) => {
   try {
     const {name} = req.body;
@@ -32,6 +34,7 @@ const createTable = async (req, res, next) => {
   }
 };
 
+// Cập nhật bàn
 const updateTable = async (req, res, next) => {
   try {
     const tableId = parseInt(req.params.id);
@@ -54,6 +57,7 @@ const updateTable = async (req, res, next) => {
   }
 };
 
+// Xóa bàn
 const deleteTable = async (req, res, next) => {
   try {
     const tableId = parseInt(req.params.id);
@@ -66,6 +70,7 @@ const deleteTable = async (req, res, next) => {
   }
 };
 
+// Tạo token cho bàn
 const generateTableToken = async (req, res, next) => {
   try {
     const tableId = parseInt(req.params.id);
