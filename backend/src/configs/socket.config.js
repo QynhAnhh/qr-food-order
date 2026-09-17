@@ -1,13 +1,16 @@
 const {Server} = require('socket.io');
 const logger = require('../lib/logger');
+
+let ioInstance;
+
 function initSocket(httpSv){
-    const io = new Server(httpSv, {
+    ioInstance = new Server(httpSv, {
         cors:{
             origin: '*',
         }
     });
 
-    io.on('connection', (socket) => {
+    ioInstance.on('connection', (socket) => {
         logger.info(`Một trình duyệt vừa kết nối với id: ${socket.id}`);
 
         socket.on('join_table', (tableId) => {
@@ -19,7 +22,14 @@ function initSocket(httpSv){
         logger.info(`Trình duyệt ${socket.id} đã ngắt kết nối`);
        });
     })
-    return io;
+    return ioInstance;
 }
 
-module.exports = { initSocket };
+function getIo() {
+    if (!ioInstance) {
+        throw new Error("Socket chưa được khởi tạo!");
+    }
+    return ioInstance;
+}
+
+module.exports = { initSocket, getIo };
