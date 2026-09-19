@@ -8,12 +8,8 @@ const { initSocket } = require("./configs/socket.config");
 const logger = require("./lib/logger");
 
 const errorHandler = require("./middlewares/error.mid");
-const authRoutes = require("./modules/auth/auth.route");
-const userRoutes = require("./modules/users/user.route");
-const tableRoutes = require('./modules/tables/table.route');
-const menuItemRoutes = require('./modules/menuItems/menuItem.route');
-const orderRoutes = require('./modules/orders/order.route');
-const feedbackRoutes = require('./modules/feedbacks/feedback.route');
+
+const apiV1Routes = require('./api/v1/routes');
 
 
 const app = express();
@@ -24,13 +20,7 @@ app.use(express.json());
 connectRedis();
 initSocket(httpServer);
 
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use('/tables', tableRoutes);
-app.use('/menu-items', menuItemRoutes);
-app.use('/orders', orderRoutes);
-app.use('/feedbacks', feedbackRoutes);
-
+app.use('/api/v1', apiV1Routes);
 
 app.use(errorHandler);
 
