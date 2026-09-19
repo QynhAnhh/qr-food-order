@@ -112,10 +112,19 @@ const getTableOrder = async (req, res, next) => {
 // Lấy danh sách các hóa đơn đang hoạt động
 const getActiveOrders = async (req, res, next) => {
     try {
+        const { role } = req.user;
+
+        // Bếp chỉ xem món đã duyệt. Phục vụ/Admin xem tất cả món chờ duyệt.
+        let itemFilter = { status: { not: 'CANCELLED' } }; 
+        if (role === 'KITCHEN') {
+            itemFilter = { status: { in: ['CONFIRMED', 'PREPARING', 'READY'] } };
+        }
+
         const activeOrders = await prisma.order.findMany ({
             where: {status: 'IN_PROGRESS'}, include: {
                 table: true, 
                 items: {
+                    where: itemFilter,
                     include: {
                         menuItem: true
                     },
