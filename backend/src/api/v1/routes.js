@@ -8,6 +8,7 @@ const menuItemRoutes = require('../../modules/menuItems/menuItem.route');
 const orderRoutes = require('../../modules/orders/order.route');
 const feedbackRoutes = require('../../modules/feedbacks/feedback.route');
 const reportRoutes = require('../../modules/reports/report.route');
+const paymentRoutes = require('../../modules/payment/payment.route');
 
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
@@ -16,5 +17,6 @@ router.use('/menu-items', menuItemRoutes);
 router.use('/orders', orderRoutes);
 router.use('/feedbacks', feedbackRoutes);
 router.use('/reports', reportRoutes);
+router.use('/payment', paymentRoutes);
 
 module.exports = router;
