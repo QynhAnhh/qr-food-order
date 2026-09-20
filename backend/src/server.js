@@ -15,7 +15,9 @@ const apiV1Routes = require('./api/v1/routes');
 const app = express();
 const httpServer = createServer(app);
 
-app.use(cors());
+app.use(cors({
+  origin: env.FRONTEND_URL
+}));
 app.use(express.json());
 connectRedis();
 initSocket(httpServer);

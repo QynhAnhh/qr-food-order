@@ -2,13 +2,14 @@ const { Server } = require("socket.io");
 const logger = require("../lib/logger");
 const { redisClient } = require("./redis.config");
 const SOCKET_EVENTS = require("../constants/socketEvents");
+const env = require('./env.config');
 
 let ioInstance;
 
 function initSocket(httpSv) {
   ioInstance = new Server(httpSv, {
     cors: {
-      origin: "*",
+      origin: env.FRONTEND_URL,
     },
   });
 
