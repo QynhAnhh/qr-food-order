@@ -44,7 +44,7 @@ const submitOrder = async (req, res, next) => {
           where: { id: cartItem.menuItemId },
         });
 
-        if (!menuItem || !menuItem.isActive) {
+        if (!menuItem?.isActive) {
           const error = new Error(
             `Món ăn ID ${cartItem.menuItemId} không tồn tại hoặc đã ngừng bán!`,
           );

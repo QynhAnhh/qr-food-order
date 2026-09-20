@@ -5,7 +5,7 @@ const logger = require("../lib/logger");
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!authHeader?.startsWith("Bearer ")) {
     return res
       .status(ERROR_CODES.UNAUTHORIZED)
       .json({ message: "Bạn chưa đăng nhập" });
@@ -25,7 +25,7 @@ const verifyToken = (req, res, next) => {
 
 const checkRole = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!req.user || !allowedRoles.includes(req.user.role)) {
+    if (!allowedRoles.includes(req.user?.role)) {
       return res
         .status(ERROR_CODES.FORBIDDEN)
         .json({ message: "Bạn không có quyền" });

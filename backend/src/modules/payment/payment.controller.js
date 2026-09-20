@@ -15,7 +15,7 @@ const createPayment = async (req, res, next) => {
       where: { id: Number.parseInt(orderId) },
     });
 
-    if (!order || order.status !== ORDER_STATUS.IN_PROGRESS) {
+    if (order?.status !== ORDER_STATUS.IN_PROGRESS) {
       return res
         .status(400)
         .json({
@@ -28,7 +28,7 @@ const createPayment = async (req, res, next) => {
     const accessKey = process.env.MOMO_ACCESS_KEY;
     const secretKey = process.env.MOMO_SECRET_KEY;
 
-    const requestId = partnerCode + new Date().getTime();
+    const requestId = partnerCode + Date.now();
     const orderInfo = `Thanh toan Hoa don #${order.id}`;
     const redirectUrl = "http://localhost:5000/cam-on"; // Thanh toán xong thì MoMo chuyển khách về trang cảm ơn
     const ipnUrl = "http://localhost:5000/api/v1/payment/momo/ipn"; // Cái link để MoMo gọi báo tin nhắn thành công cho máy chủ của mình
