@@ -61,7 +61,7 @@ const createUser = async (req, res, next) => {
 // Xóa nhân viên
 const deleteUser = async (req, res, next) => {
   try {
-    const userId = parseInt(req.params.id);
+    const userId = Number.parseInt(req.params.id);
     await prisma.user.delete({
       where: { id: userId },
     });
@@ -77,7 +77,7 @@ const deleteUser = async (req, res, next) => {
 // Cập nhật nhân viên
 const updateUser = async (req, res, next) => {
   try {
-    const userId = parseInt(req.params.id);
+    const userId = Number.parseInt(req.params.id);
     const { role, password } = req.body;
 
     const updateData = {};
