@@ -1,6 +1,8 @@
 const prisma = require('../../lib/prisma.client');
 const ERROR_CODES = require('../../constants/errorCodes');
 const { getIo } = require('../../configs/socket.config');
+const SOCKET_EVENTS = require('../../constants/socketEvents');
+const ORDER_STATUS = require('../../constants/status');
 
 
 // Gọi món
@@ -19,13 +21,13 @@ const submitOrder = async (req, res, next) => {
         }
         const result = await prisma.$transaction( async(tx) => {
             let currentOrder = await tx.order.findFirst({
-                where: {tableId, status: 'IN_PROGRESS'}, include: { items: {orderBy: {batchId: 'desc'}, take: 1}}
+                where: {tableId, status: ORDER_STATUS.IN_PROGRESS}, include: { items: {orderBy: {batchId: 'desc'}, take: 1}}
             });
 
             let nextBatchId = 1;
             if(!currentOrder) {
                 currentOrder = await tx.order.create({
-                    data: {tableId, status: 'IN_PROGRESS'}
+                    data: {tableId, status: ORDER_STATUS.IN_PROGRESS}
                 });
             } else {
                 if (currentOrder.items.length > 0) {
@@ -69,7 +71,7 @@ const submitOrder = async (req, res, next) => {
             return currentOrder;
             });
 
-        getIo().emit('ORDER_NEW', { tableId, message: `Bàn ${tableId} vừa gọi món mới!`, data: result});
+        getIo().emit(SOCKET_EVENTS.ORDER_NEW, { tableId, message: `Bàn ${tableId} vừa gọi món mới!`, data: result});
 
         res.status(200).json({success: true, message: "Đặt món thành công!", data: result});
     } catch(error){
@@ -88,7 +90,7 @@ const getTableOrder = async (req, res, next) => {
             throw error;
         }
         const currentOrder = await prisma.order.findFirst({
-            where: { tableId, status: 'IN_PROGRESS'},
+            where: { tableId, status: ORDER_STATUS.IN_PROGRESS},
             include: {
                 items: {
                     include: {
@@ -115,13 +117,13 @@ const getActiveOrders = async (req, res, next) => {
         const { role } = req.user;
 
         // Bếp chỉ xem món đã duyệt. Phục vụ/Admin xem tất cả món chờ duyệt.
-        let itemFilter = { status: { not: 'CANCELLED' } }; 
+        let itemFilter = { status: { not: ORDER_STATUS.CANCELLED } }; 
         if (role === 'KITCHEN') {
-            itemFilter = { status: { in: ['CONFIRMED', 'PREPARING', 'READY'] } };
+            itemFilter = { status: { in: [ORDER_STATUS.CONFIRMED, ORDER_STATUS.PREPARING, ORDER_STATUS.READY] } };
         }
 
         const activeOrders = await prisma.order.findMany ({
-            where: {status: 'IN_PROGRESS'}, include: {
+            where: {status: ORDER_STATUS.IN_PROGRESS}, include: {
                 table: true, 
                 items: {
                     where: itemFilter,
@@ -153,7 +155,7 @@ const updateItemStatus = async (req, res, next) => {
             data: { status }
         });
 
-        getIo().emit('ORDER_STATUS_CHANGE', {
+        getIo().emit(SOCKET_EVENTS.ORDER_STATUS_CHANGE, {
             itemId: updatedItem.id,
             status: updatedItem.status,
             message: `Món ${updatedItem.id} vừa được chuyển sang trạng thái ${updatedItem.status}` 
@@ -178,7 +180,7 @@ const updateMultipleItemsStatus = async (req, res, next) => {
         data: {status}
     });
 
-    getIo().emit('ORDER_STATUS_CHANGE', {
+    getIo().emit(SOCKET_EVENTS.ORDER_STATUS_CHANGE, {
         message: `${result.count} món ăn vừa được chuyển sang trạng thái ${status}`
     });
 
@@ -198,7 +200,7 @@ const checkoutOrder = async (req, res, next) => {
         const orderId = parseInt(req.params.orderId);
         const completedOrder = await prisma.order.update({
             where: {id: orderId},
-            data: {status: 'COMPLETED'}
+            data: {status: ORDER_STATUS.COMPLETED}
         });
         res.status(200).json({
             success: true, message: "Thanh toán thành công!", data: completedOrder

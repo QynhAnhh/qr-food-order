@@ -1,4 +1,6 @@
 const prisma = require('../../lib/prisma.client');
+const ERROR_CODES = require('../../constants/errorCodes');
+const ORDER_STATUS = require('../../constants/status');
 
 // Tính tổng doanh thu
 const getRevenue = async(req, res, next) => {
@@ -17,7 +19,7 @@ const getRevenue = async(req, res, next) => {
             _sum: {
                 totalAmount: true
             }, where: {
-                status: 'COMPLETED', ...dateFilter
+                status: ORDER_STATUS.COMPLETED, ...dateFilter
             }
         });
         res.status(200).json({
@@ -41,7 +43,7 @@ const getTopItems = async (req, res, next) => {
                 quantity: true
             },
             where: {
-                status: { not: 'CANCELLED' }
+                status: { not: ORDER_STATUS.CANCELLED }
             },
             orderBy: {
                 _sum: {
