@@ -2,7 +2,7 @@ const logger = require('../lib/logger');
 const ERROR_CODES = require('../constants/errorCodes');
 
 const errorHandler = (err, req, res, next) => {
-    logger.error(`${req.method} ${req.url} - ${err.message}`);
+    logger.error("API Error", { method: req.method, url: req.url, error: err.message });
 
     const statusCode = err.statusCode || ERROR_CODES.SERVER_ERROR;
 
