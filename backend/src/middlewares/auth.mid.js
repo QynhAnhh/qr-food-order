@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const env = require("../configs/env.config");
 const ERROR_CODES = require("../constants/errorCodes");
+const logger = require("../lib/logger");
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -15,6 +16,7 @@ const verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
+    logger.warn("Xác thực Token thất bại", { error: error.message });
     return res
       .status(ERROR_CODES.UNAUTHORIZED)
       .json({ message: "Thẻ đăng nhập hết hạn hoặc là giả!" });
