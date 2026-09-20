@@ -1,5 +1,5 @@
 const prisma = require("../../lib/prisma.client");
-const crypto = require("crypto");
+const crypto = require("node:crypto");
 const axios = require("axios");
 const { getIo } = require("../../configs/socket.config");
 const logger = require("../../lib/logger");

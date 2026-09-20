@@ -33,10 +33,8 @@ const submitOrder = async (req, res, next) => {
         currentOrder = await tx.order.create({
           data: { tableId, status: ORDER_STATUS.IN_PROGRESS },
         });
-      } else {
-        if (currentOrder.items.length > 0) {
-          nextBatchId = currentOrder.items[0].batchId + 1;
-        }
+      } else if (currentOrder.items.length > 0) {
+        nextBatchId = currentOrder.items[0].batchId + 1;
       }
 
       for (const cartItem of cartItems) {

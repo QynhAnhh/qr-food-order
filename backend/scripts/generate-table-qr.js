@@ -2,8 +2,8 @@
 
 const {PrismaClient} = require('@prisma/client');
 const QRCode = require('qrcode');
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const prisma = new PrismaClient();
 
 const BASE_FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000/order';

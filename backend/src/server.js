@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { createServer } = require("http");
+const { createServer } = require("node:http");
 
 const env = require("./configs/env.config");
 const { connectRedis } = require("./configs/redis.config");
