@@ -3,6 +3,8 @@ const ERROR_CODES = require("../../constants/errorCodes");
 const { getIo } = require("../../configs/socket.config");
 const SOCKET_EVENTS = require("../../constants/socketEvents");
 const ORDER_STATUS = require("../../constants/status");
+const { redisClient } = require("../../configs/redis.config");
+
 
 // Gọi món
 const submitOrder = async (req, res, next) => {
@@ -74,6 +76,10 @@ const submitOrder = async (req, res, next) => {
 
       return currentOrder;
     });
+
+    await redisClient.del(`cart:${tableId}`);
+    getIo().to(`table_${tableId}`).emit(SOCKET_EVENTS.CART_UPDATED, []);
+
 
     getIo().emit(SOCKET_EVENTS.ORDER_NEW, {
       tableId,

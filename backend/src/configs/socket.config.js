@@ -49,6 +49,40 @@ function initSocket(httpSv) {
       }
     });
 
+    socket.on(SOCKET_EVENTS.REMOVE_ITEM, async (data) => {
+      const { tableId, menuItemId } = data;
+      const cartKey = `cart:${tableId}`;
+      try {
+        let cartData = await redisClient.get(cartKey);
+        let cart = cartData ? JSON.parse(cartData) : [];
+
+        cart = cart.filter(cartItem => cartItem.menuItemId !== menuItemId);
+        await redisClient.set(cartKey, JSON.stringify(cart));
+
+        ioInstance
+          .to(`table_${tableId}`)
+          .emit(SOCKET_EVENTS.CART_UPDATED, cart);
+        logger.info(
+          `Bàn ${tableId} vừa xóa món ${menuItemId} khỏi giỏ hàng.`,
+        );
+      } catch (error) {
+        logger.error("Lỗi khi xóa món", error);
+      }
+    });
+
+    socket.on(SOCKET_EVENTS.REQUEST_CART_STATE, async (tableId) => {
+      const cartKey = `cart:${tableId}`
+      try {
+        let cartData = await redisClient.get(cartKey);
+        let cart = cartData ? JSON.parse(cartData) : [];
+
+        socket.emit(SOCKET_EVENTS.CART_UPDATED, cart);
+
+      } catch (error) {
+        logger.error("Lỗi khi gửi trạng thái giỏ hàng", error)
+      }
+    });
+
     socket.on("disconnect", () => {
       logger.info(`Trình duyệt ${socket.id} đã ngắt kết nối`);
     });
