@@ -16,7 +16,8 @@ const getMenuItems = async (req, res, next) => {
 // Thêm món ăn
 const createMenuItem = async (req, res, next) => {
   try {
-    const { name, price, description, imageUrl } = req.body;
+    const { name, price, description } = req.body;
+    const imageUrl = req.file ? req.file.path : req.body.imageUrl;
 
     const existedItem = await prisma.menuItem.findFirst({
       where: { name },
@@ -67,7 +68,9 @@ const deleteMenuItem = async (req, res, next) => {
 const updateMenuItem = async (req, res, next) => {
   try {
     const id = Number.parseInt(req.params.id);
-    const { name, price, description, imageUrl } = req.body;
+    const { name, price, description } = req.body;
+    const imageUrl = req.file ? req.file.path : req.body.imageUrl;
+    
     const existMenuItem = await prisma.menuItem.findFirst({
       where: { name },
     });

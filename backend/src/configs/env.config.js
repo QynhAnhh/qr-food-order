@@ -7,6 +7,8 @@ const env = cleanEnv(process.env, {
   DATABASE_URL: str(),
   JWT_SECRET: str(),
   REDIS_URL: str({ default: 'redis://localhost:6379' }),
+  CLOUDINARY_CLOUD_NAME: str(),
+  CLOUDINARY_API_KEY: str(),
+  CLOUDINARY_API_SECRET: str(),
 });
-
 module.exports = env;
