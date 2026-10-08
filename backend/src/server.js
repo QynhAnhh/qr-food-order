@@ -6,6 +6,8 @@ const env = require("./configs/env.config");
 const { connectRedis } = require("./configs/redis.config");
 const { initSocket } = require("./configs/socket.config");
 const logger = require("./lib/logger");
+const apiLimiter = require("./middlewares/rateLimit.mid");
+
 
 const errorHandler = require("./middlewares/error.mid");
 
@@ -22,6 +24,7 @@ app.use(express.json());
 connectRedis();
 initSocket(httpServer);
 
+app.use('/api/v1', apiLimiter);
 app.use('/api/v1', apiV1Routes);
 
 app.use(errorHandler);

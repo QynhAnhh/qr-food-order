@@ -4,7 +4,8 @@ const ERROR_CODES = {
   FORBIDDEN: 403,    // Không có quyền truy cập
   NOT_FOUND: 404,    // Không tìm thấy
   CONFLICT: 409,     // Lỗi xung đột dữ liệu - VD: Khách và Phục vụ cùng bấm 1 nút
-  SERVER_ERROR: 500  // Lỗi phía máy chủ
+  SERVER_ERROR: 500,  // Lỗi phía máy chủ
+  TOO_MANY_REQUESTS: 429 // Bấm nút quá nhanh, có dấu hiệu spam
 };
 
 module.exports = ERROR_CODES;
